@@ -1,0 +1,9 @@
+name: mc920
+channels:
+  - defaults
+dependencies:
+  - python=3.10
+  - matplotlib
+  - opencv
+  - numpy
+prefix: /home/rafae/miniconda3/envs/mc920
