@@ -20,4 +20,4 @@ env/
 .ipynb_checkpoints
 *.ipynb
 
-results/
+output/
