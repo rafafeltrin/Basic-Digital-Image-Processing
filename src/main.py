@@ -3,7 +3,7 @@ import sys
 import numpy as np
 import cv2
 from ultils import load_image, save_image, display_results
-from transformations import rotation_90, rotation_180, rotation_270
+from transformations import rotation_90, rotation_180, rotation_270, image_elargement_replication_2_factor, image_elargement_replication_4_factor
 
 def main():
     parser = argparse.ArgumentParser(description="MC920 - Trabalho 1")
@@ -17,7 +17,9 @@ def main():
                         choices=[
                             "rotation_90", 
                             "rotation_180", 
-                            "rotation_270"
+                            "rotation_270",
+                            "elargement_replication_2_factor",
+                            "elargement_replication_4_factor"
                         ],
                         help="Select the transformation or filter to apply")
 
@@ -43,6 +45,10 @@ def main():
         result = rotation_180(img)
     elif args.task == "rotation_270":
         result = rotation_270(img)
+    elif args.task == "elargement_replication_2_factor":
+        result = image_elargement_replication_2_factor(img)
+    elif args.task == "elargement_replication_4_factor":
+        result = image_elargement_replication_4_factor(img)
     else:
         print("Invalid task.")
         sys.exit(1)
