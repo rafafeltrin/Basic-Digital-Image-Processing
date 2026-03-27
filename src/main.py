@@ -3,7 +3,7 @@ import sys
 import numpy as np
 import cv2
 from ultils import load_image, save_image, display_results
-from transformations import rotation_90, rotation_180, rotation_270, image_elargement_replication_2_factor, image_elargement_replication_4_factor
+from transformations import rotation_90, rotation_180, rotation_270, image_elargement_replication_2_factor, image_elargement_replication_4_factor, image_elargement_replication
 
 def main():
     parser = argparse.ArgumentParser(description="MC920 - Trabalho 1")
@@ -19,7 +19,8 @@ def main():
                             "rotation_180", 
                             "rotation_270",
                             "elargement_replication_2_factor",
-                            "elargement_replication_4_factor"
+                            "elargement_replication_4_factor",
+                            "elargement_replication"
                         ],
                         help="Select the transformation or filter to apply")
 
@@ -49,6 +50,9 @@ def main():
         result = image_elargement_replication_2_factor(img)
     elif args.task == "elargement_replication_4_factor":
         result = image_elargement_replication_4_factor(img)
+    elif args.task == "elargement_replication":
+        factor = int(input("Enter the replication factor: "))
+        result = image_elargement_replication(img, factor)
     else:
         print("Invalid task.")
         sys.exit(1)

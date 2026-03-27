@@ -26,3 +26,10 @@ def image_elargement_replication_4_factor(img: np.ndarray) -> np.ndarray:
     new_image_4 = image_elargement_replication_2_factor(new_image_2)
 
     return new_image_4
+
+
+def image_elargement_replication(img: np.ndarray, factor: int) -> np.ndarray:
+    row_indices = np.arange(img.shape[0] * factor) // factor
+    col_indices = np.arange(img.shape[1] * factor) // factor
+
+    return img[row_indices][:, col_indices]
