@@ -4,7 +4,7 @@ import numpy as np
 import cv2
 from ultils import load_image, save_image, display_results
 from transformations import rotation_90, rotation_180, rotation_270, image_elargement_replication_2_factor, image_elargement_replication_4_factor, image_elargement_replication
-from filters import pencil_sketch
+from filters import pencil_sketch, gamma_correction, threshold_binarization
 
 
 def main():
@@ -23,7 +23,9 @@ def main():
                             "elargement_replication_2_factor",
                             "elargement_replication_4_factor",
                             "elargement_replication",
-                            "pencil_sketch"
+                            "pencil_sketch",
+                            "gamma_correction",
+                            "threshold_binarization"
                         ],
                         help="Select the transformation or filter to apply")
 
@@ -58,6 +60,12 @@ def main():
         result = image_elargement_replication(img, factor)
     elif args.task == "pencil_sketch":
         result = pencil_sketch(img)
+    elif args.task == "gamma_correction":
+        gamma = float(input("Enter the gamma value: "))
+        result = gamma_correction(img, gamma)
+    elif args.task == "threshold_binarization":
+        threshold = int(input("Enter the threshold value (0-255): "))
+        result = threshold_binarization(img, threshold)
     else:
         print("Invalid task.")
         sys.exit(1)
