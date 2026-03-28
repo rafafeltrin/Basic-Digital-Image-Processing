@@ -4,6 +4,8 @@ import numpy as np
 import cv2
 from ultils import load_image, save_image, display_results
 from transformations import rotation_90, rotation_180, rotation_270, image_elargement_replication_2_factor, image_elargement_replication_4_factor, image_elargement_replication
+from filters import pencil_sketch
+
 
 def main():
     parser = argparse.ArgumentParser(description="MC920 - Trabalho 1")
@@ -20,7 +22,8 @@ def main():
                             "rotation_270",
                             "elargement_replication_2_factor",
                             "elargement_replication_4_factor",
-                            "elargement_replication"
+                            "elargement_replication",
+                            "pencil_sketch"
                         ],
                         help="Select the transformation or filter to apply")
 
@@ -53,11 +56,13 @@ def main():
     elif args.task == "elargement_replication":
         factor = int(input("Enter the replication factor: "))
         result = image_elargement_replication(img, factor)
+    elif args.task == "pencil_sketch":
+        result = pencil_sketch(img)
     else:
         print("Invalid task.")
         sys.exit(1)
 
-    # 4. Save and optionally display
+    # Save and optionally display
     save_image(result, "output", args.output)
     if args.display:
         display_results(img, result, title=args.task)
