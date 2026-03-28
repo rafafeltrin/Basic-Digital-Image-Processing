@@ -4,7 +4,7 @@ import numpy as np
 import cv2
 from ultils import load_image, save_image, display_results
 from transformations import rotation_90, rotation_180, rotation_270, image_elargement_replication_2_factor, image_elargement_replication_4_factor, image_elargement_replication
-from filters import pencil_sketch, gamma_correction, threshold_binarization
+from filters import pencil_sketch, gamma_correction, threshold_binarization, sepia_filter, monochrome_filter, bit_planes, weighted_average_monochromatic_image
 
 
 def main():
@@ -25,7 +25,11 @@ def main():
                             "elargement_replication",
                             "pencil_sketch",
                             "gamma_correction",
-                            "threshold_binarization"
+                            "threshold_binarization",
+                            "sepia_filter",
+                            "monochrome_filter",
+                            "bit_planes",
+                            "weighted_average"
                         ],
                         help="Select the transformation or filter to apply")
 
@@ -66,6 +70,19 @@ def main():
     elif args.task == "threshold_binarization":
         threshold = int(input("Enter the threshold value (0-255): "))
         result = threshold_binarization(img, threshold)
+    elif args.task == "sepia_filter":
+        result = sepia_filter(img)
+    elif args.task == "monochrome_filter":
+        result = monochrome_filter(img)
+    elif args.task == "bit_planes":
+        plane = int(input("Enter the bit plane to extract (0-7): "))
+        result = bit_planes(img, plane)
+    elif args.task == "weighted_average":
+        img2_path = input("Enter the path for the second image: ")
+        img2 = load_image(img2_path, monochromatic=args.monochromatic)
+        weight1 = float(input("Enter the weight for the first image (0-1): "))
+        weight2 = float(input("Enter the weight for the second image (0-1): "))
+        result = weighted_average_monochromatic_image(img, img2, weight1, weight2)
     else:
         print("Invalid task.")
         sys.exit(1)

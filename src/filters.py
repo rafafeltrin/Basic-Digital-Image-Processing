@@ -32,3 +32,36 @@ def gamma_correction(img:np.ndarray, gamma: float) -> np.ndarray:
 def threshold_binarization(img: np.ndarray, threshold: int) -> np.ndarray:
     result = np.where(img > threshold, 255, 0)
     return result.astype(np.uint8)
+
+def sepia_filter(img: np.ndarray) -> np.ndarray:
+    filter = np.array([[0.393, 0.769, 0.189],
+                       [0.349, 0.686, 0.168],
+                       [0.272, 0.534, 0.131]])
+    
+    sepia_img = np.dot(img, filter.T)
+
+    sepia_img = np.where(sepia_img > 255, 255, sepia_img)
+
+    return sepia_img.astype(np.uint8)
+
+def monochrome_filter(img: np.ndarray) -> np.ndarray:
+    filter = np.array([0.2989, 0.5870, 0.1140])
+
+    monochromatic_image = np.dot(img, filter.T)
+
+    return monochromatic_image.astype(np.uint8)
+
+def bit_planes (img: np.ndarray, plane: int) -> np.ndarray:
+    result = (img >> plane) & 1
+
+    return result
+
+def weighted_average_monochromatic_image(img1: np.ndarray, img2: np.ndarray, weight1: float, weight2: float) -> np.ndarray:
+    if img1.shape != img2.shape:
+        raise ValueError("Both images must have the same dimensions")
+    
+    weighted_image = (weight1 * img1) + (weight2 * img2)
+
+    weighted_image = np.where(weighted_image > 255, 255, weighted_image)
+
+    return weighted_image.astype(np.uint8)
