@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-from ultils import save_image
+from utils import save_image
 
 def pencil_sketch(img: np.ndarray) -> np.ndarray:
     #Verifing if the image is colored

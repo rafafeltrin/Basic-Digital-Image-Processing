@@ -2,7 +2,7 @@ import argparse
 import sys
 import numpy as np
 import cv2
-from ultils import load_image, save_image, display_results
+from utils import load_image, save_image, display_results
 from transformations import rotation_90, rotation_180, rotation_270, image_elargement_replication_2_factor, image_elargement_replication_4_factor, image_elargement_replication
 from filters import pencil_sketch, gamma_correction, threshold_binarization, sepia_filter, monochrome_filter, bit_planes, weighted_average_monochromatic_image
 
