@@ -27,6 +27,7 @@ def save_image(img: np.ndarray, folder: str, filename: str) -> None:
     """
     Saves a NumPy array as a PNG image.
     """
+    
     if not os.path.exists(folder):
         raise FileNotFoundError(f"Folder does not exist: {folder}")
     
@@ -44,14 +45,20 @@ def display_results(original: np.ndarray, processed: np.ndarray, title="Result")
     """
     Displays images side-by-side using Matplotlib.
     """
+    def to_matplotlib_color(img: np.ndarray) -> np.ndarray:
+        if img.ndim == 3:
+            # OpenCV usa BGR, enquanto Matplotlib espera RGB.
+            return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        return img
+
     plt.figure(figsize=(10, 5))
     
     plt.subplot(1, 2, 1)
     plt.title("Original")
-    plt.imshow(original, cmap='gray' if len(original.shape) == 2 else None)
+    plt.imshow(to_matplotlib_color(original), cmap='gray' if len(original.shape) == 2 else None)
     
     plt.subplot(1, 2, 2)
     plt.title(title)
-    plt.imshow(processed, cmap='gray' if len(processed.shape) == 2 else None)
+    plt.imshow(to_matplotlib_color(processed), cmap='gray' if len(processed.shape) == 2 else None)
     
     plt.show()

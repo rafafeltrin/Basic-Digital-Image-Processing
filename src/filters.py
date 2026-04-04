@@ -37,19 +37,30 @@ def sepia_filter(img: np.ndarray) -> np.ndarray:
     filter = np.array([[0.393, 0.769, 0.189],
                        [0.349, 0.686, 0.168],
                        [0.272, 0.534, 0.131]])
-    
-    sepia_img = np.dot(img, filter.T)
 
-    sepia_img = np.where(sepia_img > 255, 255, sepia_img)
+    if img.ndim != 3:
+        raise ValueError("Sepia filter requires a color image")
 
-    return sepia_img.astype(np.uint8)
+    rgb_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+    sepia_rgb = np.dot(rgb_img, filter.T)
+    sepia_rgb = np.where(sepia_rgb > 255, 255, sepia_rgb)
+    sepia_rgb = sepia_rgb.astype(np.uint8)
+
+    return cv2.cvtColor(sepia_rgb, cv2.COLOR_RGB2BGR)
 
 def monochrome_filter(img: np.ndarray) -> np.ndarray:
-    filter = np.array([0.2989, 0.5870, 0.1140])
+    if img.ndim != 3:
+        raise ValueError("Monochrome filter requires a color image")
 
-    monochromatic_image = np.dot(img, filter.T)
+    # Weights for the BGR
+    weights = np.array([0.1140, 0.5870, 0.2989], dtype=np.float32)
 
-    return monochromatic_image.astype(np.uint8)
+    monochromatic_image = np.dot(img.astype(np.float32), weights)
+
+    final_result_normalized = np.where(monochromatic_image > 255, 255, monochromatic_image)
+
+    return final_result_normalized.astype(np.uint8)
 
 def bit_planes (img: np.ndarray, plane: int) -> np.ndarray:
     result = (img >> plane) & 1
