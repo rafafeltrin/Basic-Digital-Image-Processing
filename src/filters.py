@@ -65,7 +65,7 @@ def monochrome_filter(img: np.ndarray) -> np.ndarray:
 def bit_planes (img: np.ndarray, plane: int) -> np.ndarray:
     result = (img >> plane) & 1
 
-    return result
+    return result.astype(np.uint8) * 255 
 
 def weighted_average_monochromatic_image(img1: np.ndarray, img2: np.ndarray, weight1: float, weight2: float) -> np.ndarray:
     if img1.shape != img2.shape:
@@ -76,3 +76,39 @@ def weighted_average_monochromatic_image(img1: np.ndarray, img2: np.ndarray, wei
     weighted_image = np.where(weighted_image > 255, 255, weighted_image)
 
     return weighted_image.astype(np.uint8)
+
+def mosaic(img: np.ndarray, mosaic_layout: np.ndarray):
+    # Extract dimensions
+    h, w = img.shape
+    grid_size = mosaic_layout.shape[0] 
+    
+    block_h = h // grid_size
+    block_w = w // grid_size
+
+    # Generate base coordinate maps
+    row_indices, col_indices = np.indices((h, w))
+
+    # Map pixels to their assigned block from the layout
+    mapped_blocks = mosaic_layout[row_indices // block_h, col_indices // block_w]
+
+    # Calculate origin coordinates for each block (The "Head")
+    # Using modulo and integer division based on the dynamic grid_size
+    head_row = ((mapped_blocks // grid_size) % block_h) * block_h
+    head_col = (mapped_blocks % grid_size) * block_w
+
+    normalized_row_indices = (row_indices // block_h) * block_h
+    normalized_col_indices = (col_indices // block_w) * block_w
+
+    head_difference_row = row_indices - normalized_row_indices
+    head_difference_col = col_indices - normalized_col_indices
+
+    # Final coordinate synthesis
+    final_row = head_row + head_difference_row
+    final_col = head_col + head_difference_col
+
+    # Vectorized application
+    result_image = img[final_row, final_col]
+    
+    return result_image.astype(np.uint8)
+
+

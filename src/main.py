@@ -4,7 +4,7 @@ import numpy as np
 import cv2
 from utils import load_image, save_image, display_results
 from transformations import rotation_90, rotation_180, rotation_270, image_elargement_replication_2_factor, image_elargement_replication_4_factor, image_elargement_replication
-from filters import pencil_sketch, gamma_correction, threshold_binarization, sepia_filter, monochrome_filter, bit_planes, weighted_average_monochromatic_image
+from filters import mosaic, pencil_sketch, gamma_correction, threshold_binarization, sepia_filter, monochrome_filter, bit_planes, weighted_average_monochromatic_image
 
 
 def main():
@@ -29,7 +29,8 @@ def main():
                             "sepia_filter",
                             "monochrome_filter",
                             "bit_planes",
-                            "weighted_average"
+                            "weighted_average",
+                            "mosaic"
                         ],
                         help="Select the transformation or filter to apply")
 
@@ -83,6 +84,14 @@ def main():
         weight1 = float(input("Enter the weight for the first image (0-1): "))
         weight2 = float(input("Enter the weight for the second image (0-1): "))
         result = weighted_average_monochromatic_image(img, img2, weight1, weight2)
+    elif args.task == "mosaic":
+        professor_array = np.array([
+            [6, 11, 13, 3],
+            [8, 16,  1, 9],
+            [12, 14, 2, 7],
+            [4, 15, 10, 5]
+        ]) - 1
+        result = mosaic(img, professor_array)
     else:
         print("Invalid task.")
         sys.exit(1)
