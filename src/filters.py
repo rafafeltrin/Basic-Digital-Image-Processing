@@ -117,12 +117,19 @@ def negative_filter(img: np.ndarray) -> np.ndarray:
 
 def intensity_transformed(img: np.ndarray) -> np.ndarray:
     img_float = img.astype(np.float32)
-    
-    stretched = (img_float - 100.0) * 2.55
-    
-    result = np.clip(stretched, 0, 255)
-    
+
+    result = np.where(
+        img_float < 100,
+        0,
+        np.where(
+            img_float > 200,
+            255,
+            (img_float - 100) * 2.55
+        )
+    )
+
     return result.astype(np.uint8)
+
 
 def inverted_even_rows(img: np.ndarray) -> np.ndarray:
     inverted_image = img.copy()
