@@ -4,7 +4,7 @@ import numpy as np
 import cv2
 from utils import load_image, save_image, display_results
 from transformations import rotation_90, rotation_180, rotation_270, image_elargement_replication_2_factor, image_elargement_replication_4_factor, image_elargement_replication
-from filters import mosaic, pencil_sketch, gamma_correction, threshold_binarization, sepia_filter, monochrome_filter, bit_planes, weighted_average_monochromatic_image
+from filters import mosaic, pencil_sketch, gamma_correction, threshold_binarization, sepia_filter, monochrome_filter, bit_planes, weighted_average_monochromatic_image, negative_filter, intensity_transformed, inverted_even_rows, mirror_top_half_to_bottom_half,vertical_mirror
 
 
 def main():
@@ -30,7 +30,8 @@ def main():
                             "monochrome_filter",
                             "bit_planes",
                             "weighted_average",
-                            "mosaic"
+                            "mosaic",
+                            "intensity_transformation"
                         ],
                         help="Select the transformation or filter to apply")
 
@@ -92,6 +93,24 @@ def main():
             [4, 15, 10, 5]
         ]) - 1
         result = mosaic(img, professor_array)
+    elif args.task == "intensity_transformation":
+        negative = negative_filter(img)
+        save_image(negative, "output", f"{args.output}negative.png")
+
+        intensity_transformed_image = intensity_transformed(img)
+        save_image(intensity_transformed_image, "output", f"{args.output[:-4]}intensity_transformed.png")
+
+        inverted_even_rows_image = inverted_even_rows(img)
+        save_image(inverted_even_rows_image, "output", f"{args.output[:-4]}inverted_even_rows.png")
+
+        mirror_top_half_to_bottom_half_image = mirror_top_half_to_bottom_half(img)
+        save_image(mirror_top_half_to_bottom_half_image, "output", f"{args.output[:-4]}mirror_top_half.png")
+
+        vertical_mirror_image = vertical_mirror(img)
+        save_image(vertical_mirror_image, "output", f"{args.output[:-4]}vertical_mirror.png")
+
+        result = vertical_mirror_image  # Just to have a final result to display
+        
     else:
         print("Invalid task.")
         sys.exit(1)

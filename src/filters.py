@@ -112,3 +112,31 @@ def mosaic(img: np.ndarray, mosaic_layout: np.ndarray):
     return result_image.astype(np.uint8)
 
 
+def negative_filter(img: np.ndarray) -> np.ndarray:
+    return 255 - img
+
+def intensity_transformed(img: np.ndarray) -> np.ndarray:
+    img_float = img.astype(np.float32)
+    
+    stretched = (img_float - 100.0) * 2.55
+    
+    result = np.clip(stretched, 0, 255)
+    
+    return result.astype(np.uint8)
+
+def inverted_even_rows(img: np.ndarray) -> np.ndarray:
+    inverted_image = img.copy()
+    inverted_image[::2, :] = inverted_image[::2, ::-1]
+    return inverted_image.astype(np.uint8)
+
+
+def mirror_top_half_to_bottom_half(img: np.ndarray) -> np.ndarray:
+    mirrored_image = img.copy()
+    half = mirrored_image.shape[0] // 2
+    mirrored_image[half:, :] = mirrored_image[:half, :][::-1, :]
+    
+    return mirrored_image.astype(np.uint8)
+
+def vertical_mirror(img: np.ndarray) -> np.ndarray:
+    # This flips the image upside down
+    return img[::-1, :]
