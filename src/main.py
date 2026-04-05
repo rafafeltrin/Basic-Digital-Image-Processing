@@ -3,7 +3,7 @@ import sys
 import numpy as np
 import cv2
 from utils import load_image, save_image, display_results
-from transformations import rotation_90, rotation_180, rotation_270, image_elargement_replication_2_factor, image_elargement_replication_4_factor, image_elargement_replication
+from transformations import rotation_90, rotation_180, rotation_270, image_elargement_replication_2_factor, image_elargement_replication_4_factor, image_elargement_replication, bit_representation
 from filters import mosaic, pencil_sketch, gamma_correction, threshold_binarization, sepia_filter, monochrome_filter, bit_planes, weighted_average_monochromatic_image, negative_filter, intensity_transformed, inverted_even_rows, mirror_top_half_to_bottom_half,vertical_mirror
 
 
@@ -31,7 +31,8 @@ def main():
                             "bit_planes",
                             "weighted_average",
                             "mosaic",
-                            "intensity_transformation"
+                            "intensity_transformation",
+                            "bit_representation"
                         ],
                         help="Select the transformation or filter to apply")
 
@@ -110,7 +111,10 @@ def main():
         save_image(vertical_mirror_image, "output", f"{args.output[:-4]}vertical_mirror.png")
 
         result = vertical_mirror_image  # Just to have a final result to display
-        
+    elif args.task == "bit_representation":
+        original_bit_depth = int(input("Enter the original bit depth (e.g., 8): "))
+        final_bit_depth = int(input("Enter the desired bit depth (e.g., 4): "))
+        result = bit_representation(img, original_bit_depth, final_bit_depth)
     else:
         print("Invalid task.")
         sys.exit(1)

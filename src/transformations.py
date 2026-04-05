@@ -33,3 +33,15 @@ def image_elargement_replication(img: np.ndarray, factor: int) -> np.ndarray:
     col_indices = np.arange(img.shape[1] * factor) // factor
 
     return img[row_indices][:, col_indices]
+
+
+def bit_representation(img: np.ndarray, original_bit_depth:int, final_bit_depth: int):
+    factor = (2 ** original_bit_depth) / (2 ** final_bit_depth)
+    quantized_image = img // factor
+
+    step = 255.0 / (2 ** final_bit_depth - 1)
+
+    final_image = quantized_image * step
+    
+    return final_image.astype(np.uint8)
+    
