@@ -147,3 +147,17 @@ def mirror_top_half_to_bottom_half(img: np.ndarray) -> np.ndarray:
 def vertical_mirror(img: np.ndarray) -> np.ndarray:
     # This flips the image upside down
     return img[::-1, :]
+
+
+def spatial_convolution(img: np.ndarray, filter: np.ndarray) -> np.ndarray:
+    # cv2.CV_32F forces the output to be 32-bit floats. 
+    # This safely captures negative numbers and numbers > 255 during the matrix math.
+    convolved = cv2.filter2D(img, ddepth=cv2.CV_32F, kernel=filter)
+    
+    convolved_abs = np.abs(convolved)
+
+    # Safely clip the extreme values back into the visual range
+    result = np.clip(convolved_abs, 0, 255)
+    
+    # Cast back to standard 8-bit format for saving
+    return result.astype(np.uint8)

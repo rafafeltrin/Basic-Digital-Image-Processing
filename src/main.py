@@ -4,7 +4,7 @@ import numpy as np
 import cv2
 from utils import load_image, save_image, display_results
 from transformations import rotation_90, rotation_180, rotation_270, image_elargement_replication_2_factor, image_elargement_replication_4_factor, image_elargement_replication, bit_representation
-from filters import mosaic, pencil_sketch, gamma_correction, threshold_binarization, sepia_filter, monochrome_filter, bit_planes, weighted_average_monochromatic_image, negative_filter, intensity_transformed, inverted_even_rows, mirror_top_half_to_bottom_half,vertical_mirror
+from filters import mosaic, pencil_sketch, gamma_correction, spatial_convolution, threshold_binarization, sepia_filter, monochrome_filter, bit_planes, weighted_average_monochromatic_image, negative_filter, intensity_transformed, inverted_even_rows, mirror_top_half_to_bottom_half,vertical_mirror
 
 
 def main():
@@ -32,7 +32,8 @@ def main():
                             "weighted_average",
                             "mosaic",
                             "intensity_transformation",
-                            "bit_representation"
+                            "bit_representation",
+                            "spatial_convolution"
                         ],
                         help="Select the transformation or filter to apply")
 
@@ -115,6 +116,85 @@ def main():
         original_bit_depth = int(input("Enter the original bit depth (e.g., 8): "))
         final_bit_depth = int(input("Enter the desired bit depth (e.g., 4): "))
         result = bit_representation(img, original_bit_depth, final_bit_depth)
+    elif args.task == "spatial_convolution":
+        mask_to_use = int(input("Enter the mask number to use (1-11): "))
+
+        h1_mask = np.array([[ 0,  0, -1,  0,  0],
+                            [ 0, -1, -2, -1,  0],
+                            [-1, -2, 16, -2, -1],
+                            [ 0, -1, -2, -1,  0],
+                            [ 0,  0, -1,  0,  0]], dtype=np.float32)
+
+
+        h2_mask = (1.0 / 256.0) * np.array([
+            [1,  4,  6,  4, 1],
+            [4, 16, 24, 16, 4],
+            [6, 24, 36, 24, 6],
+            [4, 16, 24, 16, 4],
+            [1,  4,  6,  4, 1]
+            ], dtype=np.float32)
+
+        h3_mask = np.array([[-1, 0, 1],
+                            [-2, 0, 2],
+                            [-1, 0, 1]], dtype=np.float32)
+
+        h4_mask = np.array([[-1, -2, -1],
+                            [ 0,  0,  0],
+                            [ 1,  2,  1]], dtype=np.float32)
+
+        h5_mask = np.array([[-1, -1, -1],
+                            [-1,  8, -1],
+                            [-1, -1, -1]], dtype=np.float32)
+
+        h6_mask = (1.0 / 9.0) * np.array([
+            [1, 1, 1],
+            [1, 1, 1],
+            [1, 1, 1]
+        ], dtype=np.float32)
+
+        h7_mask = np.array([[-1, -1,  2],
+                            [-1,  2, -1],
+                            [ 2, -1, -1]], dtype=np.float32)
+
+        h8_mask = np.array([[ 2, -1, -1],
+                            [-1,  2, -1],
+                            [-1, -1,  2]], dtype=np.float32)
+
+        # h9: 9x9 Identity matrix divided by 9. 
+        h9_mask = (1.0 / 9.0) * np.eye(9, dtype=np.float32)
+
+        # h10: 5x5 High-pass/Sharpening mask. Multiplied by 1/8.
+        h10_mask = (1.0 / 8.0) * np.array([
+            [-1, -1, -1, -1, -1],
+            [-1,  2,  2,  2, -1],
+            [-1,  2,  8,  2, -1],
+            [-1,  2,  2,  2, -1],
+            [-1, -1, -1, -1, -1]
+        ], dtype=np.float32)
+
+        h11_mask = np.array([[-1, -1, 0],
+                            [-1,  0, 1],
+                            [ 0,  1, 1]], dtype=np.float32)
+        
+        masks = {
+            1: h1_mask,
+            2: h2_mask,
+            3: h3_mask,
+            4: h4_mask,
+            5: h5_mask,
+            6: h6_mask,
+            7: h7_mask,
+            8: h8_mask,
+            9: h9_mask,
+            10: h10_mask,
+            11: h11_mask
+        }
+        if mask_to_use in masks:
+            selected_mask = masks[mask_to_use]
+            result = spatial_convolution(img, selected_mask)
+        else:
+            print("Invalid mask number. Please enter a number between 1 and 11.")
+            sys.exit(1)
     else:
         print("Invalid task.")
         sys.exit(1)
