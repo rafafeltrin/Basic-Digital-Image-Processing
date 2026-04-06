@@ -161,3 +161,14 @@ def spatial_convolution(img: np.ndarray, filter: np.ndarray) -> np.ndarray:
     
     # Cast back to standard 8-bit format for saving
     return result.astype(np.uint8)
+
+
+def combined_gradient_magnitude(img: np.ndarray, filter_x: np.ndarray, filter_y: np.ndarray) -> np.ndarray:
+    gx = cv2.filter2D(img, ddepth=cv2.CV_32F, kernel=filter_x)
+    gy = cv2.filter2D(img, ddepth=cv2.CV_32F, kernel=filter_y)
+    
+    magnitude = np.sqrt((gx ** 2) + (gy ** 2))
+    
+    result = np.clip(magnitude, 0, 255)
+    
+    return result.astype(np.uint8)

@@ -4,7 +4,7 @@ import numpy as np
 import cv2
 from utils import load_image, save_image, display_results
 from transformations import rotation_90, rotation_180, rotation_270, image_elargement_replication_2_factor, image_elargement_replication_4_factor, image_elargement_replication, bit_representation
-from filters import mosaic, pencil_sketch, gamma_correction, spatial_convolution, threshold_binarization, sepia_filter, monochrome_filter, bit_planes, weighted_average_monochromatic_image, negative_filter, intensity_transformed, inverted_even_rows, mirror_top_half_to_bottom_half,vertical_mirror
+from filters import combined_gradient_magnitude, mosaic, pencil_sketch, gamma_correction, spatial_convolution, threshold_binarization, sepia_filter, monochrome_filter, bit_planes, weighted_average_monochromatic_image, negative_filter, intensity_transformed, inverted_even_rows, mirror_top_half_to_bottom_half,vertical_mirror
 
 
 def main():
@@ -117,7 +117,7 @@ def main():
         final_bit_depth = int(input("Enter the desired bit depth (e.g., 4): "))
         result = bit_representation(img, original_bit_depth, final_bit_depth)
     elif args.task == "spatial_convolution":
-        mask_to_use = int(input("Enter the mask number to use (1-11): "))
+        mask_to_use = int(input("Enter the mask number to use (1-12): "))
 
         h1_mask = np.array([[ 0,  0, -1,  0,  0],
                             [ 0, -1, -2, -1,  0],
@@ -192,6 +192,8 @@ def main():
         if mask_to_use in masks:
             selected_mask = masks[mask_to_use]
             result = spatial_convolution(img, selected_mask)
+        elif mask_to_use == 12:
+            result = combined_gradient_magnitude(img, h3_mask, h4_mask)
         else:
             print("Invalid mask number. Please enter a number between 1 and 11.")
             sys.exit(1)
