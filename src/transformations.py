@@ -1,34 +1,42 @@
 import numpy as np
 import cv2
 
+"""Transformacoes geometricas e de quantizacao para imagens.
+"""
+
 def rotation_90(img: np.ndarray) -> np.ndarray:
+    """Rotaciona a imagem em 90 graus.
+
+    :param img: Imagem de entrada.
+    :returns: Imagem rotacionada em 90 graus.
+    """
     return np.transpose(img[::-1,::])
 
 def rotation_180(img: np.ndarray) -> np.ndarray:
+    """Rotaciona a imagem em 180 graus.
+
+    :param img: Imagem de entrada.
+    :returns: Imagem rotacionada em 180 graus.
+    """
     return img[::-1, ::-1]
 
 def rotation_270(img: np.ndarray) -> np.ndarray:
+    """Rotaciona a imagem em 270 graus.
+
+    :param img: Imagem de entrada.
+    :returns: Imagem rotacionada em 270 graus.
+    """
     return np.transpose(img[::, ::-1])
 
-def image_elargement_replication_2_factor(img: np.ndarray) -> np.ndarray:
-    x, y = img.shape
-    new_image = np.zeros((x * 2, y * 2), dtype=img.dtype)
-
-    new_image[::2, ::2] = img
-    new_image[1::2, 1::2] = img
-    new_image[::2, 1::2] = img
-    new_image[1::2, ::2] = img
-
-    return new_image
-
-def image_elargement_replication_4_factor(img: np.ndarray) -> np.ndarray:
-    new_image_2 = image_elargement_replication_2_factor(img)
-    new_image_4 = image_elargement_replication_2_factor(new_image_2)
-
-    return new_image_4
 
 
 def image_elargement_replication(img: np.ndarray, factor: int) -> np.ndarray:
+    """Amplia a imagem por um fator inteiro via replicacao de pixels.
+
+    :param img: Imagem de entrada.
+    :param factor: Fator inteiro de ampliacao.
+    :returns: Imagem ampliada conforme o fator informado.
+    """
     row_indices = np.arange(img.shape[0] * factor) // factor
     col_indices = np.arange(img.shape[1] * factor) // factor
 
@@ -36,6 +44,16 @@ def image_elargement_replication(img: np.ndarray, factor: int) -> np.ndarray:
 
 
 def bit_representation(img: np.ndarray, original_bit_depth:int, final_bit_depth: int):
+    """Reduz a profundidade de bits da imagem por quantizacao uniforme.
+
+    A imagem e quantizada para a profundidade final e reescalada para o
+    intervalo visual de 8 bits [0, 255].
+
+    :param img: Imagem de entrada.
+    :param original_bit_depth: Profundidade de bits original da imagem.
+    :param final_bit_depth: Profundidade de bits desejada apos quantizacao.
+    :returns: Imagem quantizada em `uint8`.
+    """
     factor = (2 ** original_bit_depth) / (2 ** final_bit_depth)
     quantized_image = img // factor
 

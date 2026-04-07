@@ -3,9 +3,19 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
+"""Funcoes utilitarias para E/S de imagens e visualizacao.
+
+Este modulo concentra operacoes de carregamento, salvamento e exibicao
+de imagens usadas no fluxo principal do projeto.
+"""
+
 def load_image(path: str, monochromatic: bool=True) -> np.ndarray:
-    """
-    Loads a PNG image from the disk.
+    """Carrega uma imagem do disco usando OpenCV.
+
+    :param path: Caminho do arquivo de imagem.
+    :param monochromatic: Se verdadeiro, carrega em tons de cinza.
+    :returns: Imagem carregada como arranjo NumPy.
+    :raises FileNotFoundError: Se o arquivo nao puder ser lido.
     """
         
     if monochromatic:
@@ -24,8 +34,13 @@ def load_image(path: str, monochromatic: bool=True) -> np.ndarray:
     return img
 
 def save_image(img: np.ndarray, folder: str, filename: str) -> None:
-    """
-    Saves a NumPy array as a PNG image.
+    """Salva uma imagem no disco.
+
+    :param img: Imagem a ser salva.
+    :param folder: Pasta de destino.
+    :param filename: Nome do arquivo de saida.
+    :returns: Nao retorna valor.
+    :raises FileNotFoundError: Se a pasta de destino nao existir.
     """
     
     if not os.path.exists(folder):
@@ -42,10 +57,19 @@ def save_image(img: np.ndarray, folder: str, filename: str) -> None:
         print(f"Image saved: {full_path}")
 
 def display_results(original: np.ndarray, processed: np.ndarray, title="Result"):
-    """
-    Displays images side-by-side using Matplotlib.
+    """Exibe imagem original e processada lado a lado.
+
+    :param original: Imagem original.
+    :param processed: Imagem apos processamento.
+    :param title: Titulo do painel da imagem processada.
+    :returns: Nao retorna valor.
     """
     def to_matplotlib_color(img: np.ndarray) -> np.ndarray:
+        """Converte imagem BGR para RGB quando necessario.
+
+        :param img: Imagem de entrada.
+        :returns: Imagem no formato esperado pelo Matplotlib.
+        """
         if img.ndim == 3:
             # OpenCV usa BGR, enquanto Matplotlib espera RGB.
             return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)

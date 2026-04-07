@@ -1,13 +1,26 @@
+"""Interface de linha de comando para aplicar transformacoes e filtros.
+
+Este modulo recebe a imagem de entrada, seleciona a tarefa informada por
+argumento e salva a imagem processada no caminho de saida.
+"""
+
 import argparse
 import sys
 import numpy as np
 import cv2
 from utils import load_image, save_image, display_results
-from transformations import rotation_90, rotation_180, rotation_270, image_elargement_replication_2_factor, image_elargement_replication_4_factor, image_elargement_replication, bit_representation
+from transformations import rotation_90, rotation_180, rotation_270, image_elargement_replication, bit_representation
 from filters import combined_gradient_magnitude, mosaic, pencil_sketch, gamma_correction, spatial_convolution, threshold_binarization, sepia_filter, monochrome_filter, bit_planes, weighted_average_monochromatic_image, negative_filter, intensity_transformed, inverted_even_rows, mirror_top_half_to_bottom_half,vertical_mirror
 
 
 def main():
+    """Executa o fluxo principal da aplicacao via CLI.
+
+    Configura e interpreta os argumentos, carrega a imagem de entrada,
+    aplica a transformacao/filtro selecionado e salva o resultado.
+
+    :returns: Nao retorna valor. O efeito e a escrita do arquivo de saida.
+    """
     parser = argparse.ArgumentParser(description="MC920 - Trabalho 1")
     
     # Positional arguments for Input and Output paths
@@ -20,8 +33,6 @@ def main():
                             "rotation_90", 
                             "rotation_180", 
                             "rotation_270",
-                            "elargement_replication_2_factor",
-                            "elargement_replication_4_factor",
                             "elargement_replication",
                             "pencil_sketch",
                             "gamma_correction",
@@ -45,24 +56,17 @@ def main():
 
     args = parser.parse_args()
 
-    #Load the image (monochromatic as per spec 1.1)
     if args.monochromatic:
         img = load_image(args.input, monochromatic=True)
     else:
         img = load_image(args.input, monochromatic=False)
     
-    
-    # Execution logic
     if args.task == "rotation_90":
         result = rotation_90(img)
     elif args.task == "rotation_180":
         result = rotation_180(img)
     elif args.task == "rotation_270":
         result = rotation_270(img)
-    elif args.task == "elargement_replication_2_factor":
-        result = image_elargement_replication_2_factor(img)
-    elif args.task == "elargement_replication_4_factor":
-        result = image_elargement_replication_4_factor(img)
     elif args.task == "elargement_replication":
         factor = int(input("Enter the replication factor: "))
         result = image_elargement_replication(img, factor)
@@ -195,13 +199,12 @@ def main():
         elif mask_to_use == 12:
             result = combined_gradient_magnitude(img, h3_mask, h4_mask)
         else:
-            print("Invalid mask number. Please enter a number between 1 and 11.")
+            print("Invalid mask number. Please enter a number between 1 and 12.")
             sys.exit(1)
     else:
         print("Invalid task.")
         sys.exit(1)
 
-    # Save and optionally display
     save_image(result, "output", args.output)
     if args.display:
         display_results(img, result, title=args.task)
